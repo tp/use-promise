@@ -46,15 +46,15 @@ function usePromise(p, deps) {
         // Client / browser implementation
         var preloadedState = window.__USE_PROMISE_PRELOADED_STATE__;
         var preloadedDataForPromise_1 = preloadedState.shift();
-        var _a = react_1.useState(preloadedDataForPromise_1 || [false, undefined, undefined]), state = _a[0], setState_1 = _a[1];
+        var _a = react_1.useState(preloadedDataForPromise_1 || { loading: true }), state = _a[0], setState_1 = _a[1];
         react_1.useEffect(function () {
             if (preloadedDataForPromise_1) {
                 return;
             }
             else {
                 p()
-                    .then(function (r) { return setState_1([true, r, undefined]); })
-                    .catch(function (e) { return setState_1([true, undefined, e]); });
+                    .then(function (value) { return setState_1({ loading: false, data: value }); })
+                    .catch(function (reason) { return setState_1({ loading: false, error: reason }); });
             }
         }, deps);
         return state;
@@ -69,7 +69,7 @@ function usePromise(p, deps) {
         if (!ongoingPromises[currentIndex]) {
             throw p();
         }
-        if (ongoingPromises[currentIndex][0] == false) {
+        if (ongoingPromises[currentIndex].loading) {
             throw new Error('Unexpected state, expected promise to be done');
         }
         return ongoingPromises[currentIndex];
@@ -110,11 +110,11 @@ function renderUntilPromisesAreResolved(f) {
                     return [4 /*yield*/, renderError_1];
                 case 5:
                     result = _a.sent();
-                    _ongoingPromises.push([true, result, null]);
+                    _ongoingPromises.push({ loading: false, data: result });
                     return [3 /*break*/, 7];
                 case 6:
                     e_1 = _a.sent();
-                    _ongoingPromises.push([true, null, e_1]);
+                    _ongoingPromises.push({ loading: false, error: e_1 });
                     return [3 /*break*/, 7];
                 case 7: return [3 /*break*/, 1];
                 case 8: throw renderError_1;

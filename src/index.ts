@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 export type PromiseResult<T> =
   { loading: true, error?: undefined, data?: undefined } |
-  { loading: false, error?: any, data?: T };
+  { loading: false, error?: any | undefined, data?: T | undefined };
 
 
 
