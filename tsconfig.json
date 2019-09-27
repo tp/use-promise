@@ -11,6 +11,7 @@
     "rootDirs": [
       "./src/**"
     ],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "declaration": true
   }
 }

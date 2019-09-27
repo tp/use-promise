@@ -1,8 +1,9 @@
 {
   "name": "@timm/use-promise",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A React hook for asynchronous data loading via Promises with full SSR support.",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/tp/use-promise",
   "author": "Timm Preetz <timm@preetz.us>",
   "license": "MIT",
