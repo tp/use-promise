@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
+// Error is guaranteed to be neither truthy in the error case
 export type PromiseResult<T> =
   { loading: true, error?: undefined, data?: undefined } |
-  { loading: false, error?: any | undefined, data?: T | undefined };
-
-
+  { loading: false, error: Error, data?: undefined } |
+  { loading: false, error?: undefined, data: T };
 
 // Global to be (re)set before each rendering
 let ongoingPromises: Array<PromiseResult<any>> | undefined;
@@ -25,7 +25,11 @@ export function usePromise<T>(p: () => Promise<T>, deps: any[] = []): PromiseRes
       } else {
         p()
           .then(value => setState({ loading: false, data: value }))
-          .catch(reason => setState({ loading: false, error: reason }));
+          .catch(reason => {
+            const error = reason instanceof Error ? reason : new Error(`${reason}`);
+
+            setState({ loading: false, error: error });
+          });
       }
     }, deps);
 

@@ -54,7 +54,10 @@ function usePromise(p, deps) {
             else {
                 p()
                     .then(function (value) { return setState_1({ loading: false, data: value }); })
-                    .catch(function (reason) { return setState_1({ loading: false, error: reason }); });
+                    .catch(function (reason) {
+                    var error = reason instanceof Error ? reason : new Error("" + reason);
+                    setState_1({ loading: false, error: error });
+                });
             }
         }, deps);
         return state;

@@ -4,8 +4,12 @@ export declare type PromiseResult<T> = {
     data?: undefined;
 } | {
     loading: false;
-    error?: any | undefined;
-    data?: T | undefined;
+    error: Error;
+    data?: undefined;
+} | {
+    loading: false;
+    error?: undefined;
+    data: T;
 };
 export declare function usePromise<T>(p: () => Promise<T>, deps?: any[]): PromiseResult<T>;
 export declare function renderUntilPromisesAreResolved(f: () => string): Promise<[string, any]>;
