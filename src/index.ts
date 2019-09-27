@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
-export type PromiseResult<T> = [boolean, T?, unknown?];
+export type PromiseResult<T> =
+  { loading: true, error?: undefined, data?: undefined } |
+  { loading: false, error?: any, data?: T };
+
+
 
 // Global to be (re)set before each rendering
 let ongoingPromises: Array<PromiseResult<any>> | undefined;
@@ -13,15 +17,15 @@ export function usePromise<T>(p: () => Promise<T>, deps: any[] = []): PromiseRes
 
     const preloadedDataForPromise = preloadedState.shift();
 
-    const [state, setState] = useState(preloadedDataForPromise || ([false, undefined, undefined] as PromiseResult<T>));
+    const [state, setState] = useState<PromiseResult<T>>(preloadedDataForPromise || { loading: true });
 
     useEffect(() => {
       if (preloadedDataForPromise) {
         return;
       } else {
         p()
-          .then(r => setState([true, r, undefined]))
-          .catch(e => setState([true, undefined, e]));
+          .then(value => setState({ loading: false, data: value }))
+          .catch(reason => setState({ loading: false, error: reason }));
       }
     }, deps);
 
@@ -40,7 +44,7 @@ export function usePromise<T>(p: () => Promise<T>, deps: any[] = []): PromiseRes
       throw p();
     }
 
-    if (ongoingPromises[currentIndex][0] == false) {
+    if (ongoingPromises[currentIndex].loading) {
       throw new Error('Unexpected state, expected promise to be done');
     }
 
@@ -75,9 +79,9 @@ export async function renderUntilPromisesAreResolved(f: () => string): Promise<[
         try {
           const result = await renderError;
 
-          _ongoingPromises.push([true, result, null]);
+          _ongoingPromises.push({ loading: false, data: result });
         } catch (e) {
-          _ongoingPromises.push([true, null, e]);
+          _ongoingPromises.push({ loading: false, error: e });
         }
 
         continue;

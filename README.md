@@ -4,13 +4,13 @@
 
 ```ts
 function WhatToWear() {
-    const [completed, weather, err] = usePromise(() => weatherApi.getCurrentWeatherAsync());
+    const {loading, error, data} = usePromise(() => weatherApi.getCurrentWeatherAsync());
 
-    if (!completed) {
+    if (loading) {
         return <div>Loading…</div>
     }
 
-    if (!!err) {
+    if (error) {
         return <div>An error occured…</div>
     }
     
