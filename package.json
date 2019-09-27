@@ -1,6 +1,6 @@
 {
   "name": "@timm/use-promise",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "A React hook for asynchronous data loading via Promises with full SSR support.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
